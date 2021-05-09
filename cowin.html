@@ -28,6 +28,7 @@
         }
         var apiInterval;
         function callApi() {
+            document.getElementById("idDiv").innerHTML = "Script Running";
             if (document.getElementById("freq").value > 1000) {
                 var date = new Date(document.getElementById("datePicker").value);
                 var getMonth = Number.parseInt(date.getMonth(), 10) + 1;
@@ -37,6 +38,7 @@
         }
         function stopScript() {
             clearInterval(apiInterval);
+            document.getElementById("idDiv").innerHTML = "Script Stopped";
         }
         window.onload = function () {
             var date = new Date();
@@ -45,7 +47,6 @@
             document.getElementById('pin').value = "313001";
         }
     </script>
-    <script src="https://smtpjs.com/v3/smtp.js"> </script>
 </body>
 
 </html>
