@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Vaccine tracker</title>
+
+<body>
+    <input placeholder="Age 18 or 45" id="age" type="number" value="18" min="18" max="45" required />
+    <input placeholder="Enter Frequency" id="freq" type="number" value="3000" min="1000" required />
+    <input placeholder="Enter Pincode" id="pin" type="number" required />
+    <input id="datePicker" type="date" required />
+    <button type="button" onclick="callApi()">Run Script</button>
+    <button type="button" onclick="stopScript()">Stop Script</button>
+    <div id="idDiv">
+    </div>
+    <script>
+        function callCoWinApi(pin, date) {
+            fetch("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=" + pin + "&date=" + date).then(response => response.json())
+                .then(data => {
+                    if (data.sessions.length > 0) {
+                        var below45Data = data.sessions.filter(item => item.min_age_limit == document.getElementById("age").value && item.available_capacity > 0)
+                        if (below45Data.length > 0) {
+                            fetch('/sendMail');
+                            document.getElementById("idDiv").innerHTML = "<p>" + JSON.stringify(below45Data) + "</p>";
+                            stopScript();
+                        }
+                    }
+                });
+        }
+        var apiInterval;
+        function callApi() {
+            if (document.getElementById("freq").value > 1000) {
+                var date = new Date(document.getElementById("datePicker").value);
+                var getMonth = Number.parseInt(date.getMonth(), 10) + 1;
+                var dateValue = date.getDate() + "-" + getMonth + "-" + date.getFullYear();
+                apiInterval = setInterval(callCoWinApi.bind({}, document.getElementById("pin").value, dateValue), document.getElementById("freq").value);
+            }
+        }
+        function stopScript() {
+            clearInterval(apiInterval);
+        }
+        window.onload = function () {
+            var date = new Date();
+            document.getElementById('datePicker').value = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padStart(2, 0) +
+                '-' + date.getDate().toString().padStart(2, 0);
+            document.getElementById('pin').value = "313001";
+        }
+    </script>
+    <script src="https://smtpjs.com/v3/smtp.js"> </script>
+</body>
+
+</html>
