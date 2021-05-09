@@ -3,15 +3,43 @@
 <meta charset="UTF-8">
 <title>Vaccine tracker</title>
 
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+</head>
+
 <body>
-    <input placeholder="Age 18 or 45" id="age" type="number" value="18" min="18" max="45" required />
-    <input placeholder="Enter Frequency" id="freq" type="number" value="3000" min="1000" required />
-    <input placeholder="Enter Pincode" id="pin" type="number" required />
-    <input id="datePicker" type="date" required />
-    <button type="button" onclick="callApi()">Run Script</button>
-    <button type="button" onclick="stopScript()">Stop Script</button>
-    <div id="idDiv">
+    <div class="container">
+
+        <form>
+            <h2 class="form-signin-heading">Covid vaccine notifier</h2>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input placeholder="Age 18 or 45" class="form-control" id="age" type="number" value="18" min="18"
+                    max="45" required />
+
+            </div>
+            <div class="form-group">
+                <label for="freq">Frequency</label>
+                <input placeholder="Enter Frequency" class="form-control" id="freq" type="number" value="3000"
+                    min="1000" required />
+            </div>
+            <div class="form-group">
+
+                <label for="pin">Pincode</label>
+                <input placeholder="Enter Pincode" class="form-control" id="pin" type="number" value="313001"
+                    required />
+            </div>
+            <div class="form-group">
+                <label for="datePicker">Date</label>
+                <input id="datePicker" class="form-control" type="date" required />
+            </div>
+            <div class="form-group"></div><button class="btn btn-primary" type="button" onclick="callApi()">Run</button>
+            <button class="btn btn-primary" type="button" onclick="stopScript()">Stop</button>
+            <div id="idDiv" class="form-group">
+        </form>
     </div>
+
     <script>
         function callCoWinApi(pin, date) {
             fetch("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=" + pin + "&date=" + date).then(response => response.json())
@@ -21,7 +49,8 @@
                         if (below45Data.length > 0) {
                             fetch('/sendMail');
                             document.getElementById("idDiv").innerHTML = "<p>" + JSON.stringify(below45Data) + "</p>";
-                            stopScript();
+                            var centers = below45Data.map(i => i.address).toString();
+                            stopScript(`${new Date()} - Slot found at ${centers} Mail Sent. Script stopped.`);
                         }
                     }
                 });
@@ -36,9 +65,13 @@
                 apiInterval = setInterval(callCoWinApi.bind({}, document.getElementById("pin").value, dateValue), document.getElementById("freq").value);
             }
         }
-        function stopScript() {
+        function stopScript(msg) {
             clearInterval(apiInterval);
-            document.getElementById("idDiv").innerHTML = "Script Stopped";
+            if (msg) {
+                document.getElementById("idDiv").innerHTML = msg;
+            } else {
+                document.getElementById("idDiv").innerHTML = "Script Stopped";
+            }
         }
         window.onload = function () {
             var date = new Date();
