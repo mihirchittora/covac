@@ -5,8 +5,7 @@ const path = require('path');
 app = express(); // Initializing app
 
 app.get('/', function(req, res) {
-  //res.sendFile(path.join(__dirname, '/cowin.html'));
-  res.send('dfdf');
+  res.sendFile(path.join(__dirname, '/cowin.html'));
 });
 
 app.get("/sendmail", function (req, res) {
@@ -35,4 +34,5 @@ app.get("/sendmail", function (req, res) {
     }
   });
 });
+
 app.listen(process.env.PORT || 3000);
