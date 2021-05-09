@@ -9,6 +9,8 @@ app.get('/', function(req, res) {
 });
 
 app.get("/sendmail", function (req, res) {
+  let msg = req.query.msg;
+  let email = req.query.email;
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -19,9 +21,9 @@ app.get("/sendmail", function (req, res) {
 
   var mailOptions = {
     from: 'covacnotification@gmail.com',
-    to: 'mihirchittora6@gmail.com',
+    to: email,
     subject: 'Vaccine Available',
-    text: 'Book slot'
+    text: msg
   };
 
   transporter.sendMail(mailOptions, function (error, info) {

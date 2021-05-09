@@ -14,10 +14,16 @@
         <form>
             <h2 class="form-signin-heading">Covid vaccine notifier</h2>
             <div class="form-group">
-                <label for="age">Age</label>
-                <input placeholder="Age 18 or 45" class="form-control" id="age" type="number" value="18" min="18"
-                    max="45" required />
-
+                <label for="email">Email</label>
+                <input placeholder="Enter Email" class="form-control" id="email" type="email"
+                    value="mihirchittora6@gmail.com" required />
+            </div>
+            <div class="form-group">
+                <label for="age">Age 18 or 45</label>
+                <select class="form-control" id="age">
+                    <option>18</option>
+                    <option>45</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="freq">Frequency</label>
@@ -47,10 +53,10 @@
                     if (data.sessions.length > 0) {
                         var below45Data = data.sessions.filter(item => item.min_age_limit == document.getElementById("age").value && item.available_capacity > 0)
                         if (below45Data.length > 0) {
-                            fetch('/sendMail');
-                            document.getElementById("idDiv").innerHTML = "<p>" + JSON.stringify(below45Data) + "</p>";
                             var centers = below45Data.map(i => i.address).toString();
-                            stopScript(`${new Date()} - Slot found at ${centers} Mail Sent. Script stopped.`);
+                            var msg = `${new Date()} - Age - ${document.getElementById("age").value}. Slot found at ${centers} . Mail sent and Script stopped.`;
+                            fetch(`/sendMail?msg=${msg}&email=${document.getElementById("email").value}`);
+                            stopScript(msg);
                         }
                     }
                 });
