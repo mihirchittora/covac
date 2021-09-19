@@ -1,91 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<meta charset="UTF-8">
-<title>Vaccine tracker</title>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Vaccine tracker</title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2022.6">
+  <style type="text/css">
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #000000; -webkit-text-stroke: #000000}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'Helvetica Neue'; color: #000000; color: rgba(0, 0, 0, 0.85); -webkit-text-stroke: rgba(0, 0, 0, 0.85); background-color: #ffffff}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'Helvetica Neue'; color: #000000; color: rgba(0, 0, 0, 0.85); -webkit-text-stroke: rgba(0, 0, 0, 0.85); min-height: 13.0px}
+    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; color: #000000; -webkit-text-stroke: #000000; min-height: 14.0px}
+    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'Helvetica Neue'; color: #000000; color: rgba(0, 0, 0, 0.85); -webkit-text-stroke: rgba(0, 0, 0, 0.85)}
+    span.s1 {font-kerning: none}
+    span.s2 {font: 11.0px Times; font-kerning: none}
+    span.s3 {font-kerning: none; background-color: #ffffff}
+    span.s4 {font: 12.0px Times; font-kerning: none; color: #000000; -webkit-text-stroke: 0px #000000}
+    span.s5 {font-kerning: none; background-color: #b3b3b3}
+  </style>
 </head>
-
 <body>
-    <div class="container">
-
-        <form>
-            <h2 class="form-signin-heading">Covid vaccine notifier</h2>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input placeholder="Enter Email" class="form-control" id="email" type="email"
-                    value="mihirchittora6@gmail.com" required />
-            </div>
-            <div class="form-group">
-                <label for="age">Age 18 or 45</label>
-                <select class="form-control" id="age">
-                    <option>18</option>
-                    <option>45</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="freq">Frequency</label>
-                <input placeholder="Enter Frequency" class="form-control" id="freq" type="number" value="3000"
-                    min="1000" required />
-            </div>
-            <div class="form-group">
-
-                <label for="pin">Pincode</label>
-                <input placeholder="Enter Pincode" class="form-control" id="pin" type="number" value="313001"
-                    required />
-            </div>
-            <div class="form-group">
-                <label for="datePicker">Date</label>
-                <input id="datePicker" class="form-control" type="date" required />
-            </div>
-            <div class="form-group"></div><button class="btn btn-primary" type="button" onclick="callApi()">Run</button>
-            <button class="btn btn-primary" type="button" onclick="stopScript()">Stop</button>
-            <div id="idDiv" class="form-group">
-        </form>
-    </div>
-
-    <script>
-        function callCoWinApi(pin, date) {
-            fetch("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=" + pin + "&date=" + date).then(response => response.json())
-                .then(data => {
-                    if (data.sessions.length > 0) {
-                        var below45Data = data.sessions.filter(item => item.min_age_limit == document.getElementById("age").value && item.available_capacity > 0)
-                        if (below45Data.length > 0) {
-                            var centers = below45Data.map(i => i.address).toString();
-                            var msg = `${new Date()} - Age - ${document.getElementById("age").value}. Slot found at ${centers} . Mail sent and Script stopped.`;
-                            fetch(`/sendMail?msg=${msg}&email=${document.getElementById("email").value}`);
-                            stopScript(msg);
-                        }
-                    }
-                });
-        }
-        var apiInterval;
-        function callApi() {
-            document.getElementById("idDiv").innerHTML = "Script Running";
-            if (document.getElementById("freq").value > 1000) {
-                var date = new Date(document.getElementById("datePicker").value);
-                var getMonth = Number.parseInt(date.getMonth(), 10) + 1;
-                var dateValue = date.getDate() + "-" + getMonth + "-" + date.getFullYear();
-                apiInterval = setInterval(callCoWinApi.bind({}, document.getElementById("pin").value, dateValue), document.getElementById("freq").value);
-            }
-        }
-        function stopScript(msg) {
-            clearInterval(apiInterval);
-            if (msg) {
-                document.getElementById("idDiv").innerHTML = msg;
-            } else {
-                document.getElementById("idDiv").innerHTML = "Script Stopped";
-            }
-        }
-        window.onload = function () {
-            var date = new Date();
-            document.getElementById('datePicker').value = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padStart(2, 0) +
-                '-' + date.getDate().toString().padStart(2, 0);
-            document.getElementById('pin').value = "313001";
-        }
-    </script>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; color: #000000; -webkit-text-stroke: #000000"><span class="s1"><b>Covid vaccine notifier</b></span></h2>
+<p class="p2"><span class="s1">Email Id</span></p>
+<p class="p2"><span class="s1">Age 18 or 45</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s2">18</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s2">45</span></p>
+<p class="p4"><span class="s3"><span class="Apple-converted-space">                </span></span><span class="s4"><span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s1">Frequency<span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s1">Pincode<span class="Apple-converted-space"> </span></span></p>
+<p class="p2"><span class="s1">Date<span class="Apple-converted-space"> </span></span></p>
+<p class="p5"><span class="s1"></span><br></p>
+<p class="p6"><span class="s5">Run</span><span class="s4"> </span><span class="s5">Stop</span></p>
+<p class="p5"><span class="s1"></span><br></p>
 </body>
-
 </html>
